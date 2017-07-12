@@ -7,6 +7,7 @@ Additional functions:
 - repopick:        Utility to fetch changes from Gerrit.
 - aospremote:      Add git remote for matching AOSP repository.
 - cafremote:       Add git remote for matching CodeAurora repository.
+- gerrit:          add git remote for gerrit
 EOF
 }
 
@@ -125,3 +126,19 @@ function cafremote()
     echo "Remote 'caf' created"
 }
 export -f cafremote
+
+function gerrit()
+{
+    if [ ! -d ".git" ]; then
+        echo -e "Please run this inside a git directory";
+    else
+        git remote rm gerrit 2>/dev/null;
+        [[ -z "${GERRIT_USER}" ]] && export GERRIT_USER=$(git config --get review.review.aosiprom.com.username);
+        if [[ -z "${GERRIT_USER}" ]]; then
+            git remote add gerrit $(git remote -v | grep -i "github\.com\/InvictrixROM\/" | awk '{print $2}' | uniq | sed -e "s|https://github.com/InvictrixROM|ssh://review.invictrixrom.com:29418/|");
+        else
+            git remote add gerrit $(git remote -v | grep -i "github\.com\/InvictrixROM\/" | awk '{print $2}' | uniq | sed -e "s|https://github.com/InvictrixROM|ssh://${GERRIT_USER}@review.invictrixrom.com:29418/|");
+        fi
+    fi
+}
+export -f gerrit
