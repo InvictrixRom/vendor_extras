@@ -39,20 +39,15 @@ except:
     device = product
 
 if not depsonly:
-    print "Device %s not found. Attempting to retrieve device repository from DU Github (http://github.com/DirtyUnicorns)." % device
+    print "Device %s not found. Attempting to retrieve device repository from Invictrix Github (http://github.com/InvictrixROM-Devices)." % device
 
 repositories = []
 
-# repo check
-branch_check = r'external/libncurses'
-if os.path.exists(branch_check):
-    du_branch = "p9x-caf";
-else:
-    du_branch = "p9x";
+invictrix_branch = "inv-9.0";
 
 page = 1
 while not depsonly:
-    request = Request("https://api.github.com/users/DirtyUnicorns/repos?page=%d" % page)
+    request = Request("https://api.github.com/users/InvictrixROM-Devices/repos?page=%d" % page)
     api_file = os.getenv("HOME") + '/api_token'
     if (os.path.isfile(api_file)):
         infile = open(api_file, 'r')
@@ -98,7 +93,7 @@ def indent(elem, level=0):
 
 def get_from_manifest(devicename):
     try:
-        lm = ElementTree.parse(".repo/local_manifests/du_manifest.xml")
+        lm = ElementTree.parse(".repo/local_manifests/invictrix_manifest.xml")
         lm = lm.getroot()
     except:
         lm = ElementTree.Element("manifest")
@@ -122,7 +117,7 @@ def get_from_manifest(devicename):
 
 def is_in_manifest(projectname, branch):
     try:
-        lm = ElementTree.parse(".repo/local_manifests/du_manifest.xml")
+        lm = ElementTree.parse(".repo/local_manifests/invictrix_manifest.xml")
         lm = lm.getroot()
     except:
         lm = ElementTree.Element("manifest")
@@ -135,7 +130,7 @@ def is_in_manifest(projectname, branch):
 
 def add_to_manifest_dependencies(repositories):
     try:
-        lm = ElementTree.parse(".repo/local_manifests/du_manifest.xml")
+        lm = ElementTree.parse(".repo/local_manifests/invictrix_manifest.xml")
         lm = lm.getroot()
     except:
         lm = ElementTree.Element("manifest")
@@ -149,7 +144,7 @@ def add_to_manifest_dependencies(repositories):
                 print 'Updating dependency %s' % (repo_name)
                 existing_project.set('name', repository['repository'])
             if existing_project.attrib['revision'] == repository['branch']:
-                print 'DirtyUnicorns/%s already exists' % (repo_name)
+                print 'InvictrixROM-Devices/%s already exists' % (repo_name)
             else:
                 print 'updating branch for %s to %s' % (repo_name, repository['branch'])
                 existing_project.set('revision', repository['branch'])
@@ -157,7 +152,7 @@ def add_to_manifest_dependencies(repositories):
 
         print 'Adding dependency: %s -> %s' % (repo_name, repo_target)
         project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "github", "name": repo_name, "revision": du_branch })
+            "remote": "github", "name": repo_name, "revision": invictrix_branch })
 
         if 'branch' in repository:
             project.set('revision',repository['branch'])
@@ -168,13 +163,13 @@ def add_to_manifest_dependencies(repositories):
     raw_xml = ElementTree.tostring(lm)
     raw_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + raw_xml
 
-    f = open('.repo/local_manifests/du_manifest.xml', 'w')
+    f = open('.repo/local_manifests/invictrix_manifest.xml', 'w')
     f.write(raw_xml)
     f.close()
 
 def add_to_manifest(repositories):
     try:
-        lm = ElementTree.parse(".repo/local_manifests/du_manifest.xml")
+        lm = ElementTree.parse(".repo/local_manifests/invictrix_manifest.xml")
         lm = lm.getroot()
     except:
         lm = ElementTree.Element("manifest")
@@ -185,15 +180,15 @@ def add_to_manifest(repositories):
         existing_project = exists_in_tree_device(lm, repo_name)
         if existing_project != None:
             if existing_project.attrib['revision'] == repository['branch']:
-                print 'DirtyUnicorns/%s already exists' % (repo_name)
+                print 'InvictrixROM-Devices/%s already exists' % (repo_name)
             else:
-                print 'updating branch for DirtyUnicorns/%s to %s' % (repo_name, repository['branch'])
+                print 'updating branch for InvictrixROM-Devices/%s to %s' % (repo_name, repository['branch'])
                 existing_project.set('revision', repository['branch'])
             continue
 
-        print 'Adding dependency: DirtyUnicorns/%s -> %s' % (repo_name, repo_target)
+        print 'Adding dependency: InvictrixROM-Devices/%s -> %s' % (repo_name, repo_target)
         project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "github", "name": "DirtyUnicorns/%s" % repo_name, "revision": du_branch })
+            "remote": "github", "name": "InvictrixROM-Devices/%s" % repo_name, "revision": invictrix_branch })
 
         if 'branch' in repository:
             project.set('revision', repository['branch'])
@@ -204,13 +199,13 @@ def add_to_manifest(repositories):
     raw_xml = ElementTree.tostring(lm)
     raw_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + raw_xml
 
-    f = open('.repo/local_manifests/du_manifest.xml', 'w')
+    f = open('.repo/local_manifests/invictrix_manifest.xml', 'w')
     f.write(raw_xml)
     f.close()
 
 def fetch_dependencies(repo_path):
     print 'Looking for dependencies'
-    dependencies_path = repo_path + '/du.dependencies'
+    dependencies_path = repo_path + '/invictrix.dependencies'
     syncable_repos = []
 
     if os.path.exists(dependencies_path):
@@ -247,13 +242,13 @@ if depsonly:
 else:
     for repository in repositories:
         repo_name = repository['name']
-        if repo_name.startswith("android_device_") and repo_name.endswith("_" + device):
+        if repo_name.startswith("device_") and repo_name.endswith("_" + device):
             print "Found repository: %s" % repository['name']
-            manufacturer = repo_name.replace("android_device_", "").replace("_" + device, "")
+            manufacturer = repo_name.replace("device_", "").replace("_" + device, "")
 
             repo_path = "device/%s/%s" % (manufacturer, device)
 
-            add_to_manifest([{'repository':repo_name,'target_path':repo_path,'branch':du_branch}])
+            add_to_manifest([{'repository':repo_name,'target_path':repo_path,'branch':invictrix_branch}])
 
             print "Syncing repository to retrieve project."
             os.system('repo sync %s' % repo_path)
@@ -263,4 +258,4 @@ else:
             print "Done"
             sys.exit()
 
-print "Repository for %s not found in the DU Github repository list. If this is in error, you may need to manually add it to .repo/local_manifests/du_manifest.xml" % device
+print "Repository for %s not found in the Invictrix Github repository list. If this is in error, you may need to manually add it to .repo/local_manifests/invictrix_manifest.xml" % device

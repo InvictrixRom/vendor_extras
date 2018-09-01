@@ -24,43 +24,17 @@ ifneq ($(BUILD_WITH_COLORS),0)
     include $(TOP_DIR)vendor/extras/build/core/colors.mk
 endif
 
-ifeq ($(TARGET_BACON_NAME),)
-    INTERNAL_BACON_NAME := $(TARGET_PRODUCT)-$(PLATFORM_VERSION)-$(shell date -u +%Y%m%d)
-else
-    INTERNAL_BACON_NAME := $(TARGET_BACON_NAME)
-endif
-
-INTERNAL_BACON_TARGET := $(PRODUCT_OUT)/$(INTERNAL_BACON_NAME).zip
+INVICTRIX_TARGET_PACKAGE := $(PRODUCT_OUT)/$(INVICTRIX_VERSION).zip
 
 .PHONY: bacon
 bacon: $(INTERNAL_OTA_PACKAGE_TARGET)
-	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(INTERNAL_BACON_TARGET)
-	$(hide) $(MD5SUM) $(INTERNAL_BACON_TARGET) | sed "s|$(PRODUCT_OUT)/||" > $(INTERNAL_BACON_TARGET).md5sum
-	#@echo "Package Complete: $(INTERNAL_BACON_TARGET)" >&2
-
-	@echo  ${CL_RED}""${CL_RED}
-	@echo -e ${CL_RED}".......................########..####.########..########.##....##......................"${CL_RED}
-	@echo -e ${CL_RED}".......................##.....##..##..##.....##....##.....##..##......................."${CL_RED}
-	@echo -e ${CL_RED}".......................##.....##..##..##.....##....##......####........................"${CL_RED}
-	@echo -e ${CL_RED}".......................##.....##..##..########.....##.......##........................."${CL_RED}
-	@echo -e ${CL_RED}".......................##.....##..##..##...##......##.......##........................."${CL_RED}
-	@echo -e ${CL_RED}".......................##.....##..##..##....##.....##.......##........................."${CL_RED}
-	@echo -e ${CL_RED}".......................########..####.##.....##....##.......##........................."${CL_RED}
-	@echo -e ${CL_RED}"......................................................................................."${CL_RED}
-	@echo -e ${CL_RED}"......................................................................................."${CL_RED}
-	@echo -e ${CL_RED}".........##.....##.##....##.####..######...#######..########..##....##..######........."${CL_RED}
-	@echo -e ${CL_RED}".........##.....##.###...##..##..##....##.##.....##.##.....##.###...##.##....##........"${CL_RED}
-	@echo -e ${CL_RED}".........##.....##.####..##..##..##.......##.....##.##.....##.####..##.##.............."${CL_RED}
-	@echo -e ${CL_RED}".........##.....##.##.##.##..##..##.......##.....##.########..##.##.##..######........."${CL_RED}
-	@echo -e ${CL_RED}".........##.....##.##..####..##..##.......##.....##.##...##...##..####.......##........"${CL_RED}
-	@echo -e ${CL_RED}".........##.....##.##...###..##..##....##.##.....##.##....##..##...###.##....##........"${CL_RED}
-	@echo -e ${CL_RED}"..........#######..##....##.####..######...#######..##.....##.##....##..######........."${CL_RED}
-	@echo -e ${CL_RST}""${CL_RST}
-	@echo -e ${CL_RST}""${CL_RST}
-	@echo -e ${CL_RST}"                    Build completed! Now flash that shit and ENJOY!                    "${CL_RST}
-	@echo -e ${CL_RST}""${CL_RST}
-	@echo -e ${CL_RED}"======================================================================================="${CL_RED}
-	@echo -e ${CL_RST}""Package Complete: "$(INTERNAL_BACON_TARGET)"${CL_RST}
-	@echo -e ${CL_RED}"======================================================================================="${CL_RED}
-	@echo -e ${CL_RST}"Be yourself. Unless you can be a unicorn, in that case, you should always be a unicorn."${CL_RST}
-
+	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(INVICTRIX_TARGET_PACKAGE)
+	$(hide) $(MD5SUM) $(INVICTRIX_TARGET_PACKAGE) > $(INVICTRIX_TARGET_PACKAGE).md5sum
+	@echo -e ${CL_RED}""${CL_RED}
+	@echo -e ${CL_RED}"██╗███╗   ██╗██╗   ██╗██╗ ██████╗████████╗██████╗ ██╗██╗  ██╗"${CL_RED}
+	@echo -e ${CL_RED}"██║████╗  ██║██║   ██║██║██╔════╝╚══██╔══╝██╔══██╗██║╚██╗██╔╝"${CL_RED}
+	@echo -e ${CL_RED}"██║██╔██╗ ██║██║   ██║██║██║        ██║   ██████╔╝██║ ╚███╔╝ "${CL_RED}
+	@echo -e ${CL_RED}"██║██║╚██╗██║╚██╗ ██╔╝██║██║        ██║   ██╔══██╗██║ ██╔██╗ "${CL_RED}
+	@echo -e ${CL_RED}"██║██║ ╚████║ ╚████╔╝ ██║╚██████╗   ██║   ██║  ██║██║██╔╝ ██╗"${CL_RED}
+	@echo -e ${CL_RED}"╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝ ╚═════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝"${CL_RED}
+	@echo -e "${CLR_RST}Package complete: $(INVICTRIX_TARGET_PACKAGE)"
